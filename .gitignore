@@ -1,3 +1,9 @@
+# Manually set untracked files
+model/conceptual_model.aux
+model/conceptual_model.log
+model/conceptual_model.tex
+model/uml.png
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
