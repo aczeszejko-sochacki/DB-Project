@@ -19,9 +19,10 @@ def init_db(db):
                 cur.execute(init_data.read())
                 print('...done')
                 cur.close()
-
+            
+            return 'init'
+        else:
+            return 'normal'
     except IndexError:
-        pass        # normal mode
-
-
+        return 'normal'     # normal mode
 
