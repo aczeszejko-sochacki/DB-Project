@@ -1,0 +1,8 @@
+{ "open": { "database": "db_project", "user": "postgres", "password": "qwerty"} }
+{ "read": { "admin": 0, "passwd": "qwerty", "emp": 2 } }
+{ "read": { "admin": 1, "passwd": "wtf", "emp": 2 } }
+{ "read": { "admin": 1, "passwd": "qwerty", "emp": 1 } }
+{ "update": { "admin": 0, "passwd": "qwerty", "emp": 1, "newdata": "newdata" } }
+{ "update": { "admin": 2, "passwd": "qwerty", "emp": 0, "newdata": "newdata" } }
+{ "read": { "admin": 1, "passwd": "qwerty", "emp": 0 } }
+{ "read": { "admin": 1, "passwd": "qwerty", "emp": 1 } }

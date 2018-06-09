@@ -4,8 +4,12 @@ from .commands import NewCommand
 from .commands import AncestorCommand
 from .commands import ParentCommand
 from .commands import ChildCommand
+from .commands import ReadCommand
+from .commands import UpdateCommand
 from .handlers import RootHandler
 from .handlers import NewHandler
 from .handlers import AncestorHandler
 from .handlers import ParentHandler
 from .handlers import ChildHandler
+from .handlers import ReadHandler
+from .handlers import UpdateHandler

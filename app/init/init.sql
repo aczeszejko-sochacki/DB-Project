@@ -64,6 +64,23 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 
+-- Read data of emp = $1
+CREATE OR REPLACE FUNCTION read(int) RETURNS text AS
+$$
+BEGIN
+  RETURN (SELECT data FROM workers WHERE emp = $1);
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- Update data of emp = $1, set newdata = $2
+CREATE OR REPLACE FUNCTION update(int, text) RETURNS VOID AS
+$$
+BEGIN
+	UPDATE workers SET data = $2 WHERE emp = $1;
+END;
+$$ LANGUAGE plpgsql VOLATILE;
+
 -- Insert root
 CREATE OR REPLACE FUNCTION root(int, text, text) RETURNS VOID AS
 $$

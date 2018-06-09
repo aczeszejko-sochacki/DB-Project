@@ -16,11 +16,15 @@ def main():
     new_handler = NewHandler()
     parent_handler = ParentHandler()
     child_handler = ChildHandler()
+    read_handler = ReadHandler()
+    update_handler = UpdateHandler()
     # ancestor_handler = AncestorHandler()
     bus.subscribe(RootCommand, root_handler)
     bus.subscribe(NewCommand, new_handler)
     bus.subscribe(ParentCommand, parent_handler)
     bus.subscribe(ChildCommand, child_handler)
+    bus.subscribe(ReadCommand, read_handler)
+    bus.subscribe(UpdateCommand, update_handler)
     # bus.subscribe(AncestorCommand, ancestor_handler)
 
     # Read json-object-like commands from the input file
@@ -73,6 +77,16 @@ def main():
                 # child only in normal mode
                 child = ChildCommand(db_conn, command['child'], mode)
                 bus.publish(child)
+
+            if 'read' in command:
+                # read only in normal mode
+                read = ReadCommand(db_conn, command['read'], mode)
+                bus.publish(read)
+
+            if 'update' in command:
+                # update only in normal mode
+                update = UpdateCommand(db_conn, command['update'], mode)
+                bus.publish(update)
                 
 
 if __name__ == "__main__":
