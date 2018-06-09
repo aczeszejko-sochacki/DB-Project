@@ -1,3 +1,4 @@
-{ "open": { "database": "db_project", "login": "postgres", "password": "qwerty"} }
+{ "open": { "database": "db_project", "user": "postgres", "password": "qwerty"}}
 { "root": { "secret": "qwerty", "newpassword": "qwerty", "data": "dane prezesa", "emp":0} }
 { "new": { "admin": 0, "passwd": "123456", "data":"dane wiceprezesa", "newpasswd":"qwerty", "emp1":0, "emp":1 } }
+{ "new": { "admin": 0, "passwd": "qwerty", "data":"dane wiceprezesa", "newpasswd":"qwerty", "emp1":0, "emp":1 } }

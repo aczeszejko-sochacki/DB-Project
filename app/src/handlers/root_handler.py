@@ -1,4 +1,5 @@
 from commandbus import Command, CommandHandler
+import json
 
 class RootHandler(CommandHandler):
     """Handle root command"""
@@ -11,14 +12,18 @@ class RootHandler(CommandHandler):
                 
                 # Root has not a supervisor
                 if RootCommand.params['secret'] != 'qwerty':
-                    return False    # to do
-                
-                # Return status of transaction
-                return cur.callproc('root', (
-                            RootCommand.params['emp'],
-                            RootCommand.params['newpassword'],
-                            RootCommand.params['data']))
+                    print(json.JSONEncoder().encode({'status': 'ERROR'}))
+
+                # Transaction
+                cur.callproc('root', (
+                        RootCommand.params['emp'],
+                        RootCommand.params['newpassword'],
+                        RootCommand.params['data']))
+
+                RootCommand.db_conn.commit()
+
+                print(json.JSONEncoder().encode({'status': 'OK'}))
 
         else:
             # Transaction failed
-            return False    
+            print(json.JSONEncoder().encode({'status': 'ERROR'}))

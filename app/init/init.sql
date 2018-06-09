@@ -15,22 +15,34 @@ CREATE TABLE subordinates(
   subordinate int REFERENCES workers(emp) NOT NULL);
 
 
--- Check if emp2 = $2 is ancestor of emp1 = $1
-CREATE OR REPLACE FUNCTION ancestor(int, int) RETURNS boolean AS
+-- Check if emp = $1 has password $2
+CREATE OR REPLACE FUNCTION check_password(int, text) RETURNS VOID AS
+$$
+BEGIN
+  IF ($1, $2) NOT IN (SELECT emp, password FROM workers)
+  THEN RAISE EXCEPTION 'Wrong password!';
+  END IF;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- Check if emp2 = $2 is ancestor of emp1 = $1 or $2 = $1
+CREATE OR REPLACE FUNCTION ancestor_or_equal(int, int) RETURNS VOID AS
 $$
 DECLARE
  worker ALIAS FOR $1;
 BEGIN
   WHILE worker IS NOT NULL LOOP
+    IF worker = $2 THEN RETURN;
+    END IF;
+
     SELECT supervisor INTO worker
     FROM workers
     WHERE emp = worker;
 
-    IF worker = $2 THEN RETURN TRUE;
-    END IF;
   END LOOP;
 
-  RETURN FALSE;
+  RAISE EXCEPTION 'Neither ancestor nor equal';
 END;
 $$ LANGUAGE plpgsql STABLE;
 
@@ -39,17 +51,35 @@ $$ LANGUAGE plpgsql STABLE;
 CREATE OR REPLACE FUNCTION root(int, text, text) RETURNS VOID AS
 $$
 BEGIN
-	INSERT INTO workers(emp, password, data) VALUES($1, $2, $3);
+  INSERT INTO workers(emp, password, data) VALUES($1, $2, $3);
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
 
 -- Insert new worker
-CREATE OR REPLACE FUNCTION new(int, text, int, text) RETURNS BOOLEAN AS
+CREATE OR REPLACE FUNCTION insert_new_worker(int, text, int, text) 
+RETURNS VOID AS
 $$
 BEGIN
   INSERT INTO workers VALUES($1, $2, $3, $4);
-  RETURN TRUE;  -- to do
 END;
 $$ LANGUAGE plpgsql VOLATILE;
+
+
+-- Insert new subordinate to subordinates table
+CREATE OR REPLACE FUNCTION add_sub() RETURNS TRIGGER AS
+$$
+BEGIN
+  IF (SELECT COUNT(*) 
+	  FROM workers) > 1  -- insert after new, not root
+  THEN INSERT INTO subordinates VALUES(NEW.supervisor, NEW.emp);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql VOLATILE;
+
+
+-- Add subordinate after insert
+CREATE TRIGGER add_subordinate AFTER INSERT ON workers FOR EACH ROW
+EXECUTE PROCEDURE add_sub();
 
