@@ -5,19 +5,20 @@ class RootHandler(CommandHandler):
 
     def handle(self, RootCommand: Command):
 
-        # root command only available in init mode
+        # Root command only available in init mode
         if RootCommand.mode == 'init':
             with RootCommand.db_conn.cursor() as cur:
                 
-                # root has not a supervisor
+                # Root has not a supervisor
                 if RootCommand.params['secret'] != 'qwerty':
-                    pass    # return fail; to do
-
-                cur.execute('''INSERT INTO workers(emp, password, data)
-                    VALUES (%s, %s, %s)''', (
+                    return False    # to do
+                
+                # Return status of transaction
+                return cur.callproc('root', (
                             RootCommand.params['emp'],
                             RootCommand.params['newpassword'],
                             RootCommand.params['data']))
 
         else:
-            pass    # return fail; to do
+            # Transaction failed
+            return False    
