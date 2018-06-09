@@ -1,18 +1,17 @@
-
 DROP TABLE IF EXISTS workers CASCADE;
-DROP TABLE IF EXISTS subordinates CASCADE;
+DROP TABLE IF EXISTS children CASCADE;
 
 -- Create tables
 CREATE TABLE workers(
   emp int PRIMARY KEY,
   password text NOT NULL,
-  supervisor int,
+  parent int,
   data text NOT NULL);
 
 
-CREATE TABLE subordinates(
+CREATE TABLE children(
   emp int NOT NULL,
-  subordinate int REFERENCES workers(emp) NOT NULL);
+  child int REFERENCES workers(emp) NOT NULL);
 
 
 -- Check if emp = $1 has password $2
@@ -22,6 +21,24 @@ BEGIN
   IF ($1, $2) NOT IN (SELECT emp, password FROM workers)
   THEN RAISE EXCEPTION 'Wrong password!';
   END IF;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- Return parent of emp = $1
+CREATE OR REPLACE FUNCTION parent(int) RETURNS int AS
+$$
+BEGIN
+  RETURN (SELECT parent FROM workers WHERE emp = $1);
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- Return children of emp = $1
+CREATE OR REPLACE FUNCTION child(int) RETURNS SETOF int AS
+$$
+BEGIN
+  RETURN QUERY (SELECT child FROM children WHERE emp = $1);
 END;
 $$ LANGUAGE plpgsql STABLE;
 
@@ -36,7 +53,7 @@ BEGIN
     IF worker = $2 THEN RETURN;
     END IF;
 
-    SELECT supervisor INTO worker
+    SELECT parent INTO worker
     FROM workers
     WHERE emp = worker;
 
@@ -72,7 +89,7 @@ $$
 BEGIN
   IF (SELECT COUNT(*) 
 	  FROM workers) > 1  -- insert after new, not root
-  THEN INSERT INTO subordinates VALUES(NEW.supervisor, NEW.emp);
+  THEN INSERT INTO children VALUES(NEW.parent, NEW.emp);
   END IF;
   RETURN NEW;
 END;
@@ -80,6 +97,6 @@ $$ LANGUAGE plpgsql VOLATILE;
 
 
 -- Add subordinate after insert
-CREATE TRIGGER add_subordinate AFTER INSERT ON workers FOR EACH ROW
+CREATE TRIGGER add_child AFTER INSERT ON workers FOR EACH ROW
 EXECUTE PROCEDURE add_sub();
 

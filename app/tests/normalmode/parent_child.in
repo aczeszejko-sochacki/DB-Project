@@ -1,0 +1,9 @@
+{ "open": { "database": "db_project", "user": "postgres", "password": "qwerty"} }
+{ "parent": { "admin": 1, "passwd": "qwerty", "emp": 2 } }
+{ "parent": { "admin": 1, "passwd": "wtf", "emp": 2 } }
+{ "parent": { "admin": 0, "passwd": "qwerty", "emp": 1 } }
+{ "parent": { "admin": 2, "passwd": "qwerty", "emp": 0 } }
+{ "child": { "admin": 1, "passwd": "qwerty", "emp": 0 } }
+{ "child": { "admin": 1, "passwd": "wtf", "emp": 2 } }
+{ "child": { "admin": 0, "passwd": "qwerty", "emp": 1 } }
+{ "child": { "admin": 2, "passwd": "qwerty", "emp": 0 } }

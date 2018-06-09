@@ -1,0 +1,3 @@
+{ "open": { "database": "db_project", "user": "postgres", "password": "qwerty"} }
+{ "new": { "admin": 0, "passwd": "qwerty", "data":"dane wicewiceprezesa", "newpasswd"    :"qwerty", "emp1":1, "emp":2 } }
+{ "new": { "admin": 0, "passwd": "qwerty", "data":"dane wiceprezesa2", "newpasswd"    :"qwerty", "emp1":0, "emp":3 } }
