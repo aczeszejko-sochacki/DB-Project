@@ -20,9 +20,8 @@ class ChildHandler(CommandHandler):
                     cur.callproc('child', (
                             ChildCommand.params['emp'],))
                     
-                    children = [child[0] for child in cur.fetchall()]
                     print(json.JSONEncoder().encode(
-                        {'status': 'OK', 'data': children}))
+                        {'status': 'OK', 'data': cur.fetchone()[0]}))
 
                 except psycopg2.DatabaseError:
 
