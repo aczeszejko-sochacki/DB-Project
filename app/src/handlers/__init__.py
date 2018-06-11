@@ -7,3 +7,4 @@ from .read_handler import ReadHandler
 from .update_handler import UpdateHandler
 from .ancestors_handler import AncestorsHandler
 from .descendants_handler import DescendantsHandler
+from .remove_handler import RemoveHandler

@@ -137,6 +137,26 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
+
+-- Remove worker and all of his direct and indirect subordinates
+CREATE OR REPLACE FUNCTION remove(int) RETURNS VOID AS
+$$
+BEGIN
+  -- Delete descendants
+  DELETE FROM workers
+  WHERE emp IN (SELECT * FROM descendants($1));
+
+  -- Delete $1 worker
+  DELETE FROM workers
+  WHERE emp = $1;
+
+  -- Remove $1 child and invoke updating in / out
+  UPDATE workers SET children = array_remove(children, $1)
+  WHERE array_position(children, $1) > 0;
+END;
+$$ LANGUAGE plpgsql VOLATILE;
+
+
 -- Insert new subordinate to subordinates table
 CREATE OR REPLACE FUNCTION add_sub() RETURNS TRIGGER AS
 $$
@@ -189,13 +209,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- Triggers in PostgreSQL are invoked alphabetically!!!
-
 -- Add subordinate after insert
 CREATE TRIGGER add_child AFTER INSERT ON workers FOR EACH ROW
 EXECUTE PROCEDURE add_sub();
 
+
 -- Set new in / out after insert
 CREATE TRIGGER in_out AFTER UPDATE OF children ON workers FOR EACH ROW
 EXECUTE PROCEDURE dfs();
-

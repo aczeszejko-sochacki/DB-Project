@@ -21,6 +21,7 @@ def main():
     ancestor_handler = AncestorHandler()
     ancestors_handler = AncestorsHandler()
     descendants_handler = DescendantsHandler()
+    remove_handler = RemoveHandler()
     bus.subscribe(RootCommand, root_handler)
     bus.subscribe(NewCommand, new_handler)
     bus.subscribe(ParentCommand, parent_handler)
@@ -30,6 +31,7 @@ def main():
     bus.subscribe(AncestorCommand, ancestor_handler)
     bus.subscribe(AncestorsCommand, ancestors_handler)
     bus.subscribe(DescendantsCommand, descendants_handler)
+    bus.subscribe(RemoveCommand, remove_handler)
 
     # Read json-object-like commands from the input file
     commands = read_data(input())
@@ -61,52 +63,19 @@ def main():
                         password=open_command['open']['password']) \
                     as db_conn:
 
-            if 'root' in command:
-                # root only in init mode
-                root = RootCommand(db_conn, command['root'], mode)
-                bus.publish(root)
+            try:
+                command_name = globals()[
+                        list(command.keys())[0].title() + 'Command']
 
-            if  'new' in command:
-                # new in both modes
-                new = NewCommand(db_conn, command['new'])
-                bus.publish(new)
+                command_instance = command_name(db_conn, 
+                                    list(command.values())[0], mode)
+                bus.publish(command_instance)
 
-            if 'parent' in command:
-                # parent only in normal mode
-                parent = ParentCommand(db_conn, command['parent'], mode)
-                bus.publish(parent)
+            except KeyError:
 
-            if 'child' in command:
-                # child only in normal mode
-                child = ChildCommand(db_conn, command['child'], mode)
-                bus.publish(child)
-
-            if 'read' in command:
-                # read only in normal mode
-                read = ReadCommand(db_conn, command['read'], mode)
-                bus.publish(read)
-
-            if 'update' in command:
-                # update only in normal mode
-                update = UpdateCommand(db_conn, command['update'], mode)
-                bus.publish(update)
-
-            if 'ancestor' in command:
-                # ancestor only in normal mode
-                ancestor = AncestorCommand(db_conn, command['ancestor'], mode)
-                bus.publish(ancestor)
-
-            if 'ancestors' in command:
-                # ancestors only in normal mode
-                ancestors = AncestorsCommand(db_conn, command['ancestors'], mode)
-                bus.publish(ancestors)
-
-            if 'descendants' in command:
-                # descendants only in normal mode
-                descendants = DescendantsCommand(db_conn, 
-                            command['descendants'], mode)
-                bus.publish(descendants)
-                
+                # Command key should be valid
+                print(json.JSONEncoder().encode({'status': 'ERROR'}))
+               
 
 if __name__ == "__main__":
     main()
