@@ -77,6 +77,17 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 
+-- Check if emp2 = $2 is ancestor of emp1 = $1, raise exception otherwise
+CREATE OR REPLACE FUNCTION ancestor_not_equal(int, int) RETURNS VOID AS
+$$
+BEGIN
+  IF NOT ancestor($1, $2) THEN
+	RAISE EXCEPTION 'Not ancestor';
+  END IF;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
 -- Return all ancestors of emp = $1
 CREATE OR REPLACE FUNCTION ancestors(int) RETURNS SETOF int AS
 $$

@@ -17,6 +17,10 @@ class RemoveHandler(CommandHandler):
                             RemoveCommand.params['admin'],
                             RemoveCommand.params['passwd']))
 
+                    cur.callproc('ancestor_not_equal', (
+                            RemoveCommand.params['emp'],
+                            RemoveCommand.params['admin']))
+
                     cur.callproc('remove', (
                             RemoveCommand.params['emp'],))
                     
@@ -24,7 +28,6 @@ class RemoveHandler(CommandHandler):
                         {'status': 'OK'}))
 
                 except psycopg2.DatabaseError:
-
                     # Transaction failed
                     print(json.JSONEncoder().encode({'status': 'ERROR'}))
         else:

@@ -2,3 +2,4 @@
 { "remove": { "admin": 0, "passwd": "qwerty", "emp": 1 } }
 { "remove": { "admin": 0, "passwd": "wtf", "emp": 1 } }
 { "remove": { "admin": 0, "passwd": "qwerty", "emp": 3 } }
+{ "remove": { "admin": 6, "passwd": "qwerty", "emp": 3 } }

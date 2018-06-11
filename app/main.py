@@ -11,8 +11,10 @@ def main():
     receive commands and pass to handlers
     """
 
-    # Init commandbus and handlers
+    # Init commandbus
     bus = CommandBus()
+
+    # Init handlers for commands
     root_handler = RootHandler()
     new_handler = NewHandler()
     parent_handler = ParentHandler()
@@ -24,6 +26,8 @@ def main():
     descendants_handler = DescendantsHandler()
     remove_handler = RemoveHandler()
     open_handler = OpenHandler()
+
+    # Route commands to coresponding handlers
     bus.subscribe(RootCommand, root_handler)
     bus.subscribe(NewCommand, new_handler)
     bus.subscribe(ParentCommand, parent_handler)
@@ -68,6 +72,8 @@ def main():
 
                 command_instance = command_name(db_conn, 
                                     list(command.values())[0], mode)
+
+                # Handle command
                 bus.publish(command_instance)
 
             except KeyError:
