@@ -1,5 +1,6 @@
 import psycopg2
 import json
+import sys
 from commandbus import Command, CommandHandler, CommandBus
 from init import init_db
 from src import *
@@ -22,6 +23,7 @@ def main():
     ancestors_handler = AncestorsHandler()
     descendants_handler = DescendantsHandler()
     remove_handler = RemoveHandler()
+    open_handler = OpenHandler()
     bus.subscribe(RootCommand, root_handler)
     bus.subscribe(NewCommand, new_handler)
     bus.subscribe(ParentCommand, parent_handler)
@@ -32,28 +34,25 @@ def main():
     bus.subscribe(AncestorsCommand, ancestors_handler)
     bus.subscribe(DescendantsCommand, descendants_handler)
     bus.subscribe(RemoveCommand, remove_handler)
+    bus.subscribe(OpenCommand, open_handler)
+
+    # Get transaction mode
+    mode = 'normal'
+    try:
+        mode = sys.argv[1][2:]
+    except IndexError:
+        pass
+
 
     # Read json-object-like commands from the input file
     commands = read_data(input())
     open_command = commands.pop(0)
 	
     # Check connection with the specified database
-    try:
-        with psycopg2.connect(host='localhost', 
-                        dbname=open_command['open']['database'],
-                        user=open_command['open']['user'],
-                        password=open_command['open']['password']) \
-                    as db_conn:
-        
-            print(json.JSONEncoder().encode({'status': 'OK'}))
+    bus.publish(OpenCommand(open_command))
 
-            # init database
-            mode = init_db(db_conn, 'init', 'init.sql')
-
-    # Connection error
-    except psycopg2.DatabaseError:
-        print(json.JSONEncoder().encode({'status': 'ERROR'}))
-        commands = []   # delete all commands
+    # init database
+    init_db(open_command, 'init', 'init.sql')
 
     # invoke each command
     for command in commands:
@@ -72,7 +71,6 @@ def main():
                 bus.publish(command_instance)
 
             except KeyError:
-
                 # Command key should be valid
                 print(json.JSONEncoder().encode({'status': 'ERROR'}))
                

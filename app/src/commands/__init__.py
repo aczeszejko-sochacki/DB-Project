@@ -8,3 +8,4 @@ from .update import UpdateCommand
 from .ancestors import AncestorsCommand
 from .descendants import DescendantsCommand
 from .remove import RemoveCommand
+from .open import OpenCommand
