@@ -1,0 +1,8 @@
+{ "open": { "database": "db_project", "user": "postgres", "password": "qwerty"} }
+{ "ancestor": { "admin": 0, "passwd": "qwerty", "emp1":1, "emp2":2 } }
+{ "ancestor": { "admin": 0, "passwd": "qwerty", "emp1":2, "emp2":1 } }
+{ "ancestor": { "admin": 1, "passwd": "qwerty", "emp1":6, "emp2":0 } }
+{ "ancestor": { "admin": 1, "passwd": "wtf", "emp1":4, "emp2":2 } }
+{ "ancestor": { "admin": 0, "passwd": "qwerty", "emp1":2, "emp2":4 } }
+{ "ancestor": { "admin": 0, "passwd": "qwerty", "emp1":6, "emp2":3 } }
+{ "ancestor": { "admin": 0, "passwd": "qwerty", "emp1":5, "emp2":3 } }

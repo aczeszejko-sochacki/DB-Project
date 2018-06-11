@@ -1,0 +1,11 @@
+{ "open": { "database": "db_project", "user": "postgres", "password": "qwerty"} }
+{ "ancestors": { "admin": 0, "passwd": "qwerty", "emp":1 } }
+{ "ancestors": { "admin": 0, "passwd": "qwerty", "emp":2 } }
+{ "ancestors": { "admin": 1, "passwd": "qwerty", "emp":6 } }
+{ "ancestors": { "admin": 1, "passwd": "wtf", "emp":4 } }
+{ "ancestors": { "admin": 0, "passwd": "qwerty", "emp":2 } }
+{ "descendants": { "admin": 0, "passwd": "qwerty", "emp":0 } }
+{ "descendants": { "admin": 0, "passwd": "qwerty", "emp":1 } }
+{ "descendants": { "admin": 1, "passwd": "qwerty", "emp":6 } }
+{ "descendants": { "admin": 1, "passwd": "wtf", "emp":4 } }
+{ "descendants": { "admin": 0, "passwd": "qwerty", "emp":3 } }

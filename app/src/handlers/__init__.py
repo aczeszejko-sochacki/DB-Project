@@ -5,3 +5,5 @@ from .parent_handler import ParentHandler
 from .child_handler import ChildHandler
 from .read_handler import ReadHandler
 from .update_handler import UpdateHandler
+from .ancestors_handler import AncestorsHandler
+from .descendants_handler import DescendantsHandler

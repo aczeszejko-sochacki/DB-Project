@@ -59,6 +59,48 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 
+-- Check if emp2 = $2 is ancestor of emp1 = $1
+CREATE OR REPLACE FUNCTION ancestor(int, int) RETURNS boolean AS
+$$
+DECLARE
+  in_1 int = (SELECT _in FROM workers WHERE emp = $1);
+  in_2 int = (SELECT _in FROM workers WHERE emp = $2);
+  out_1 int = (SELECT _out FROM workers WHERE emp = $1);
+  out_2 int = (SELECT _out FROM workers WHERE emp = $2);
+BEGIN
+  IF in_1 > in_2 AND out_1 < out_2 THEN
+    RETURN TRUE;
+  ELSE
+	RETURN FALSE;
+  END IF;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- Return all ancestors of emp = $1
+CREATE OR REPLACE FUNCTION ancestors(int) RETURNS SETOF int AS
+$$
+DECLARE
+  in_1 int = (SELECT _in FROM workers WHERE emp = $1);
+  out_1 int = (SELECT _out FROM workers WHERE emp = $1);
+BEGIN
+  RETURN QUERY (SELECT emp FROM workers WHERE _in < in_1 AND out_1 < _out);
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+-- Return all descendants of emp = $1
+CREATE OR REPLACE FUNCTION descendants(int) RETURNS SETOF int AS
+$$
+DECLARE
+  in_1 int = (SELECT _in FROM workers WHERE emp = $1);
+  out_1 int = (SELECT _out FROM workers WHERE emp = $1);
+BEGIN
+  RETURN QUERY (SELECT emp FROM workers WHERE in_1 < _in AND _out < out_1);
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
 -- Read data of emp = $1
 CREATE OR REPLACE FUNCTION read(int) RETURNS text AS
 $$
