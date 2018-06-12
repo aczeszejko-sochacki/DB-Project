@@ -16,7 +16,7 @@ pipenv shell
 Run app:
 ```
 pipenv run python3 main.py --init	# init mode
-pipenv run python main.py	# normal mode
+pipenv run python3 main.py	# normal mode
 ```
 ## Running tests
 Each test should be in `tests/` directory. After running app type name of the test to be executed
